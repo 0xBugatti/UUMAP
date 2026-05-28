@@ -717,6 +717,10 @@ language family the scanner routes via `-E`.
 
 <div align="center">
 
-### Built by [**@0xbugatti**](https://github.com/0xbugatti) · MIT License
+<a href="https://0xbugatti.io"><img src="https://avatars.githubusercontent.com/u/110223394?v=4" width="32" style="border-radius:50%" alt="Blog"></a>&nbsp;&nbsp;&nbsp;
+<a href="https://github.com/0xBugatti"><img src="https://cdn.simpleicons.org/github/f0f6fc" width="32" alt="GitHub"></a>&nbsp;&nbsp;&nbsp;
+<a href="https://twitter.com/0xBugatti"><img src="https://cdn.simpleicons.org/x/ffffff" width="32" alt="X"></a>&nbsp;&nbsp;&nbsp;
+<a href="https://medium.com/@0xbugatti"><img src="https://cdn.simpleicons.org/medium/ffffff" width="32" alt="Medium"></a>&nbsp;&nbsp;&nbsp;
+<a href="https://www.linkedin.com/in/mohamed-nasr-ab5619216"><img src="https://img.icons8.com/color/32/linkedin.png" width="32" alt="LinkedIn"></a>
 
 </div>
