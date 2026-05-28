@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.tox/
+.venv/
+venv/
+env/
+
+# Tool output dirs
+UpGen_out/
+Upname_out/
+UpMap_out/
+out/
+
+# Local scratch
+_test_*.py
+_debug_*.py
+_emoji_*.py
+*.bak
+*.swp
+*.swo
+
+# Editors / IDEs
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Session transcripts / planning artifacts (not part of the tool)
+2026-*-this-session-is-being-continued-*.txt
+
+# Maintenance-only embedder — kept private (re-embeds paths.json into the 3
+# tools). End users don't need it; the shipped tools already have paths.json
+# baked in. Keep this local so the registry-build process isn't broadcast.
+_embed_paths.py

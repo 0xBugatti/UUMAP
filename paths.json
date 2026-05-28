@@ -1,0 +1,887 @@
+{
+  "$schema_version": 1,
+  "$description": "Canonical known-file-paths registry. Consumed by UpMap, UpGen, and Upname to populate --file-read overrides (XXE/LFI/SSRF targets) and to build path-traversal payloads (../../../{path}) in Upname's filename-injection attack family.",
+  "$consumers": {
+    "UpMap.py":  "--file-read PATH routes every _lfi(ctx, …) site through the registry (XXE/SSI/SSRF/CSV/Ghostscript). Accepts a literal path OR @key.path into .linux / .windows / .devops_cloud / .cloud_metadata_endpoints.",
+    "UpGen.py":  "--file-read PATH routes every _lfi/_lfi_urlenc/_lfi_charref site through the registry. Accepts the same literal-or-@key forms.",
+    "Upname.py": "path_traversal attack reads .webroots.<lang>.<os> as the drop target and .linux / .windows / .devops_cloud / .cloud_metadata_endpoints as the read target."
+  },
+  "$placeholders": {
+    "{USER}":       "non-root username on shared hosting / multi-user box",
+    "{DOMAIN}":     "vhost domain name (e.g. example.com)",
+    "{APP}":        "IIS site/application name",
+    "{VERSION}":    "tool-specific version segment (e.g. PHP 8.2, PostgreSQL 14)",
+    "{TOMCAT_VER}": "Tomcat major.minor (e.g. 9.0, 10.1)",
+    "{YYMMDD}":     "IIS log date suffix",
+    "{HOSTNAME}":   "machine short hostname (used in MySQL/XAMPP .err file names)"
+  },
+
+  "linux": {
+    "system_info": [
+      "/etc/passwd",
+      "/etc/group",
+      "/etc/hostname",
+      "/etc/hosts",
+      "/etc/issue",
+      "/etc/issue.net",
+      "/etc/os-release",
+      "/etc/lsb-release",
+      "/etc/redhat-release",
+      "/etc/debian_version",
+      "/etc/motd",
+      "/etc/timezone",
+      "/etc/machine-id",
+      "/etc/fstab",
+      "/etc/profile",
+      "/etc/bash.bashrc",
+      "/etc/environment"
+    ],
+
+    "network": [
+      "/etc/resolv.conf",
+      "/etc/network/interfaces",
+      "/etc/netplan/01-netcfg.yaml",
+      "/etc/netplan/50-cloud-init.yaml",
+      "/etc/sysconfig/network",
+      "/etc/sysconfig/network-scripts/ifcfg-eth0",
+      "/proc/net/tcp",
+      "/proc/net/tcp6",
+      "/proc/net/udp",
+      "/proc/net/route",
+      "/proc/net/arp",
+      "/proc/net/fib_trie",
+      "/proc/net/unix",
+      "/etc/iptables/rules.v4",
+      "/etc/iptables/rules.v6",
+      "/etc/nftables.conf"
+    ],
+
+    "process_runtime": [
+      "/proc/self/environ",
+      "/proc/self/cmdline",
+      "/proc/self/status",
+      "/proc/self/stat",
+      "/proc/self/maps",
+      "/proc/self/cwd",
+      "/proc/self/exe",
+      "/proc/self/root",
+      "/proc/self/fd/0",
+      "/proc/self/fd/1",
+      "/proc/self/fd/2",
+      "/proc/self/fd/3",
+      "/proc/self/io",
+      "/proc/self/limits",
+      "/proc/self/mountinfo",
+      "/proc/self/mounts",
+      "/proc/version",
+      "/proc/cmdline",
+      "/proc/cpuinfo",
+      "/proc/meminfo",
+      "/proc/mounts",
+      "/proc/loadavg",
+      "/proc/uptime",
+      "/proc/modules",
+      "/proc/1/environ",
+      "/proc/1/cmdline",
+      "/proc/1/status"
+    ],
+
+    "credentials": [
+      "/etc/shadow",
+      "/etc/gshadow",
+      "/etc/sudoers",
+      "/etc/sudoers.d/",
+      "/etc/security/opasswd",
+      "/etc/security/passwd",
+      "/etc/security/group",
+      "/etc/pam.d/common-auth",
+      "/root/.ssh/id_rsa",
+      "/root/.ssh/id_dsa",
+      "/root/.ssh/id_ecdsa",
+      "/root/.ssh/id_ed25519",
+      "/root/.ssh/authorized_keys",
+      "/root/.ssh/known_hosts",
+      "/root/.ssh/config",
+      "/home/{USER}/.ssh/id_rsa",
+      "/home/{USER}/.ssh/id_ed25519",
+      "/home/{USER}/.ssh/authorized_keys",
+      "/home/{USER}/.ssh/known_hosts",
+      "/home/{USER}/.ssh/config",
+      "/etc/ssh/sshd_config",
+      "/etc/ssh/ssh_config",
+      "/etc/ssh/ssh_host_rsa_key",
+      "/etc/ssh/ssh_host_ecdsa_key",
+      "/etc/ssh/ssh_host_ed25519_key",
+      "/etc/ssh/ssh_host_dsa_key",
+      "/root/.netrc",
+      "/home/{USER}/.netrc",
+      "/root/.pgpass",
+      "/home/{USER}/.pgpass",
+      "/root/.my.cnf",
+      "/home/{USER}/.my.cnf"
+    ],
+
+    "shell_history": [
+      "/root/.bash_history",
+      "/root/.zsh_history",
+      "/root/.sh_history",
+      "/root/.ash_history",
+      "/root/.lesshst",
+      "/root/.viminfo",
+      "/root/.nano_history",
+      "/root/.python_history",
+      "/root/.mysql_history",
+      "/root/.psql_history",
+      "/root/.rediscli_history",
+      "/root/.sqlite_history",
+      "/root/.node_repl_history",
+      "/root/.irb_history",
+      "/root/.local/share/recently-used.xbel",
+      "/home/{USER}/.bash_history",
+      "/home/{USER}/.zsh_history",
+      "/home/{USER}/.python_history",
+      "/home/{USER}/.mysql_history",
+      "/home/{USER}/.psql_history",
+      "/home/{USER}/.viminfo",
+      "/home/{USER}/.lesshst"
+    ],
+
+    "logs": [
+      "/var/log/auth.log",
+      "/var/log/syslog",
+      "/var/log/messages",
+      "/var/log/secure",
+      "/var/log/dmesg",
+      "/var/log/kern.log",
+      "/var/log/boot.log",
+      "/var/log/wtmp",
+      "/var/log/btmp",
+      "/var/log/lastlog",
+      "/var/log/utmp",
+      "/var/log/faillog",
+      "/var/log/audit/audit.log",
+      "/var/log/cron",
+      "/var/log/cron.log",
+      "/var/log/maillog",
+      "/var/log/mail.log",
+      "/var/log/apache2/access.log",
+      "/var/log/apache2/error.log",
+      "/var/log/apache2/other_vhosts_access.log",
+      "/var/log/httpd/access_log",
+      "/var/log/httpd/error_log",
+      "/var/log/nginx/access.log",
+      "/var/log/nginx/error.log",
+      "/var/log/mysql/error.log",
+      "/var/log/mysql/mysql.log",
+      "/var/log/mysql/mysql-slow.log",
+      "/var/log/mariadb/mariadb.log",
+      "/var/log/postgresql/postgresql-{VERSION}-main.log",
+      "/var/log/redis/redis-server.log",
+      "/var/log/php_errors.log",
+      "/var/log/php-fpm/error.log",
+      "/var/log/tomcat9/catalina.out",
+      "/var/log/tomcat/catalina.out"
+    ],
+
+    "scheduled_tasks": [
+      "/etc/crontab",
+      "/etc/cron.d/",
+      "/etc/cron.hourly/",
+      "/etc/cron.daily/",
+      "/etc/cron.weekly/",
+      "/etc/cron.monthly/",
+      "/etc/anacrontab",
+      "/var/spool/cron/crontabs/root",
+      "/var/spool/cron/crontabs/{USER}",
+      "/var/spool/cron/{USER}",
+      "/etc/at.allow",
+      "/etc/at.deny",
+      "/etc/systemd/system/",
+      "/lib/systemd/system/",
+      "/usr/lib/systemd/system/"
+    ],
+
+    "mail_spool": [
+      "/var/spool/mail/root",
+      "/var/spool/mail/{USER}",
+      "/var/mail/root",
+      "/var/mail/{USER}",
+      "/var/spool/exim4/input/",
+      "/var/spool/postfix/maildrop/"
+    ],
+
+    "app_configs": [
+      "/etc/php/{VERSION}/fpm/php.ini",
+      "/etc/php/{VERSION}/cli/php.ini",
+      "/etc/php/{VERSION}/fpm/pool.d/www.conf",
+      "/etc/php.ini",
+      "/usr/local/etc/php/php.ini",
+      "/etc/mysql/my.cnf",
+      "/etc/mysql/mariadb.conf.d/50-server.cnf",
+      "/etc/mysql/conf.d/mysql.cnf",
+      "/etc/postgresql/{VERSION}/main/postgresql.conf",
+      "/etc/postgresql/{VERSION}/main/pg_hba.conf",
+      "/etc/redis/redis.conf",
+      "/etc/redis.conf",
+      "/etc/memcached.conf",
+      "/etc/mongod.conf",
+      "/etc/elasticsearch/elasticsearch.yml",
+      "/etc/apache2/apache2.conf",
+      "/etc/apache2/ports.conf",
+      "/etc/apache2/sites-enabled/000-default.conf",
+      "/etc/apache2/sites-available/default-ssl.conf",
+      "/etc/apache2/mods-enabled/",
+      "/etc/httpd/conf/httpd.conf",
+      "/etc/httpd/conf.d/ssl.conf",
+      "/etc/nginx/nginx.conf",
+      "/etc/nginx/sites-enabled/default",
+      "/etc/nginx/conf.d/default.conf",
+      "/etc/proftpd/proftpd.conf",
+      "/etc/vsftpd.conf",
+      "/etc/pure-ftpd/pure-ftpd.conf",
+      "/etc/samba/smb.conf",
+      "/etc/squid/squid.conf",
+      "/etc/openvpn/server.conf",
+      "/etc/openvpn/client.conf",
+      "/etc/wireguard/wg0.conf",
+      "/etc/strongswan/ipsec.conf",
+      "/etc/strongswan/ipsec.secrets",
+      "/etc/freeradius/3.0/clients.conf"
+    ]
+  },
+
+  "windows": {
+    "system_info": [
+      "C:/Windows/win.ini",
+      "C:/Windows/system.ini",
+      "C:/Windows/System32/drivers/etc/hosts",
+      "C:/Windows/System32/drivers/etc/networks",
+      "C:/Windows/System32/drivers/etc/services",
+      "C:/Windows/System32/drivers/etc/protocol",
+      "C:/Windows/System32/drivers/etc/lmhosts.sam",
+      "C:/Windows/php.ini",
+      "C:/Windows/my.ini",
+      "C:/Windows/php/php.ini",
+      "C:/boot.ini",
+      "C:/autoexec.bat",
+      "C:/Windows/setupact.log",
+      "C:/Windows/setuperr.log"
+    ],
+
+    "registry_hives": [
+      "C:/Windows/System32/config/SAM",
+      "C:/Windows/System32/config/SYSTEM",
+      "C:/Windows/System32/config/SECURITY",
+      "C:/Windows/System32/config/SOFTWARE",
+      "C:/Windows/System32/config/DEFAULT",
+      "C:/Windows/System32/config/RegBack/SAM",
+      "C:/Windows/System32/config/RegBack/SYSTEM",
+      "C:/Windows/System32/config/RegBack/SECURITY",
+      "C:/Windows/System32/config/RegBack/SOFTWARE",
+      "C:/Windows/repair/sam",
+      "C:/Windows/repair/system",
+      "C:/Windows/repair/security",
+      "C:/Windows/repair/software"
+    ],
+
+    "credentials": [
+      "C:/unattend.xml",
+      "C:/unattended.xml",
+      "C:/Windows/Panther/Unattend.xml",
+      "C:/Windows/Panther/Unattend/Unattended.xml",
+      "C:/Windows/Panther/Unattended.xml",
+      "C:/Windows/Panther/UnattendGC/setupact.log",
+      "C:/Windows/System32/sysprep/sysprep.xml",
+      "C:/Windows/System32/sysprep/sysprep.inf",
+      "C:/sysprep.inf",
+      "C:/sysprep.xml",
+      "C:/Windows/debug/NetSetup.LOG",
+      "C:/Windows/System32/config/SecEvent.Evt",
+      "C:/ProgramData/Microsoft/Group Policy/History/",
+      "C:/Users/{USER}/.ssh/id_rsa",
+      "C:/Users/{USER}/.ssh/id_ed25519",
+      "C:/Users/{USER}/.ssh/authorized_keys",
+      "C:/Users/{USER}/.ssh/config",
+      "C:/Users/Administrator/.ssh/id_rsa",
+      "C:/ProgramData/ssh/sshd_config"
+    ],
+
+    "shell_history": [
+      "C:/Users/{USER}/AppData/Roaming/Microsoft/Windows/PowerShell/PSReadLine/ConsoleHost_history.txt",
+      "C:/Users/Administrator/AppData/Roaming/Microsoft/Windows/PowerShell/PSReadLine/ConsoleHost_history.txt",
+      "C:/Users/{USER}/AppData/Local/Microsoft/Windows/History/History.IE5/",
+      "C:/Users/{USER}/AppData/Roaming/Microsoft/Windows/Recent/"
+    ],
+
+    "logs": [
+      "C:/inetpub/logs/LogFiles/W3SVC1/u_ex{YYMMDD}.log",
+      "C:/Windows/System32/LogFiles/W3SVC1/u_ex{YYMMDD}.log",
+      "C:/Windows/System32/LogFiles/HTTPERR/httperr1.log",
+      "C:/Windows/System32/winevt/Logs/Security.evtx",
+      "C:/Windows/System32/winevt/Logs/System.evtx",
+      "C:/Windows/System32/winevt/Logs/Application.evtx",
+      "C:/Windows/System32/winevt/Logs/Microsoft-Windows-PowerShell%4Operational.evtx",
+      "C:/xampp/apache/logs/access.log",
+      "C:/xampp/apache/logs/error.log",
+      "C:/xampp/mysql/data/{HOSTNAME}.err",
+      "C:/wamp/logs/access.log",
+      "C:/wamp/logs/apache_error.log",
+      "C:/wamp/logs/mysql.log",
+      "C:/Program Files/Apache Software Foundation/Tomcat {TOMCAT_VER}/logs/catalina.{YYMMDD}.log",
+      "C:/Program Files/Apache Software Foundation/Tomcat {TOMCAT_VER}/logs/localhost.{YYMMDD}.log",
+      "C:/Program Files/MySQL/MySQL Server {VERSION}/data/{HOSTNAME}.err"
+    ],
+
+    "iis": [
+      "C:/inetpub/wwwroot/web.config",
+      "C:/inetpub/wwwroot/{APP}/web.config",
+      "C:/Windows/System32/inetsrv/config/applicationHost.config",
+      "C:/Windows/System32/inetsrv/config/administration.config",
+      "C:/Windows/System32/inetsrv/config/redirection.config",
+      "C:/Windows/System32/inetsrv/MetaBase.xml",
+      "C:/inetpub/temp/IIS Temporary Compressed Files/",
+      "C:/inetpub/history/"
+    ],
+
+    "third_party_creds": [
+      "C:/Users/{USER}/AppData/Roaming/WinSCP.ini",
+      "C:/Users/{USER}/AppData/Roaming/FileZilla/sitemanager.xml",
+      "C:/Users/{USER}/AppData/Roaming/FileZilla/recentservers.xml",
+      "C:/Users/{USER}/AppData/Roaming/FileZilla/filezilla.xml",
+      "C:/ProgramData/Microsoft/Crypto/RSA/MachineKeys/",
+      "C:/Program Files/PuTTY/sessions/",
+      "C:/ProgramData/PuTTY/sessions/",
+      "C:/Users/{USER}/.aws/credentials",
+      "C:/Users/{USER}/.aws/config",
+      "C:/Users/{USER}/.kube/config",
+      "C:/Users/{USER}/.docker/config.json",
+      "C:/Users/{USER}/AppData/Roaming/gcloud/credentials.db",
+      "C:/Users/{USER}/AppData/Roaming/gcloud/application_default_credentials.json",
+      "C:/Users/{USER}/.azure/accessTokens.json",
+      "C:/Users/{USER}/.azure/azureProfile.json",
+      "C:/Users/{USER}/AppData/Roaming/Mozilla/Firefox/Profiles/",
+      "C:/Users/{USER}/AppData/Local/Google/Chrome/User Data/Default/Login Data",
+      "C:/Users/{USER}/AppData/Local/Microsoft/Edge/User Data/Default/Login Data"
+    ]
+  },
+
+  "webroots": {
+    "$note": "Per-language drop targets for shell uploads after a successful path-traversal escape. The traversal payload becomes: ../../../{webroot}/{stem}.{ext}. Languages here mirror UpMap's MODULE_LANG and UpGen's ALL_LANGS.",
+
+    "php": {
+      "linux": [
+        "/var/www/html/",
+        "/var/www/",
+        "/var/www/public/",
+        "/usr/share/nginx/html/",
+        "/etc/nginx/html/",
+        "/srv/www/htdocs/",
+        "/srv/http/",
+        "/srv/www/",
+        "/opt/lampp/htdocs/",
+        "/opt/bitnami/apache2/htdocs/",
+        "/home/{USER}/public_html/",
+        "/home/{USER}/www/",
+        "/var/www/vhosts/{DOMAIN}/httpdocs/",
+        "/var/www/{DOMAIN}/public_html/"
+      ],
+      "windows": [
+        "C:/xampp/htdocs/",
+        "C:/wamp/www/",
+        "C:/wamp64/www/",
+        "C:/Apache24/htdocs/",
+        "C:/Program Files/Apache Group/Apache2/htdocs/",
+        "C:/Program Files (x86)/Apache Group/Apache2/htdocs/",
+        "C:/inetpub/wwwroot/"
+      ]
+    },
+
+    "asp": {
+      "$note": "Classic ASP — Windows / IIS only.",
+      "windows": [
+        "C:/inetpub/wwwroot/",
+        "C:/inetpub/wwwroot/{APP}/",
+        "C:/inetpub/vhosts/{DOMAIN}/httpdocs/"
+      ]
+    },
+
+    "aspx": {
+      "$note": "ASP.NET — Windows / IIS only.",
+      "windows": [
+        "C:/inetpub/wwwroot/",
+        "C:/inetpub/wwwroot/{APP}/",
+        "C:/inetpub/wwwroot/{APP}/bin/",
+        "C:/inetpub/wwwroot/{APP}/App_Code/",
+        "C:/inetpub/vhosts/{DOMAIN}/httpdocs/"
+      ]
+    },
+
+    "jsp": {
+      "linux": [
+        "/opt/tomcat/webapps/ROOT/",
+        "/opt/tomcat/webapps/{APP}/",
+        "/usr/local/tomcat/webapps/ROOT/",
+        "/usr/share/tomcat9/webapps/ROOT/",
+        "/var/lib/tomcat/webapps/ROOT/",
+        "/var/lib/tomcat9/webapps/ROOT/",
+        "/var/lib/tomcat10/webapps/ROOT/",
+        "/opt/jetty/webapps/ROOT/",
+        "/usr/share/jetty9/webapps/ROOT/",
+        "/opt/wildfly/standalone/deployments/",
+        "/opt/jboss/standalone/deployments/"
+      ],
+      "windows": [
+        "C:/Program Files/Apache Software Foundation/Tomcat {TOMCAT_VER}/webapps/ROOT/",
+        "C:/Tomcat/webapps/ROOT/",
+        "C:/Tomcat{TOMCAT_VER}/webapps/ROOT/",
+        "C:/Program Files/Jetty/webapps/ROOT/"
+      ]
+    },
+
+    "coldfusion": {
+      "linux": [
+        "/opt/coldfusion{VERSION}/wwwroot/",
+        "/opt/coldfusion/wwwroot/",
+        "/opt/lucee/tomcat/webapps/ROOT/"
+      ],
+      "windows": [
+        "C:/ColdFusion{VERSION}/wwwroot/",
+        "C:/ColdFusion/wwwroot/",
+        "C:/JRun4/servers/lib/wwwroot/",
+        "C:/lucee/tomcat/webapps/ROOT/"
+      ]
+    },
+
+    "perl_cgi": {
+      "$note": "Generic CGI dir — Perl, Python, Ruby, Bash CGI scripts execute when dropped here.",
+      "linux": [
+        "/usr/lib/cgi-bin/",
+        "/var/www/cgi-bin/",
+        "/var/www/html/cgi-bin/",
+        "/usr/local/apache2/cgi-bin/",
+        "/srv/www/cgi-bin/",
+        "/home/{USER}/cgi-bin/"
+      ],
+      "windows": [
+        "C:/Apache24/cgi-bin/",
+        "C:/xampp/cgi-bin/",
+        "C:/wamp/cgi-bin/"
+      ]
+    },
+
+    "static": {
+      "$note": "Plain document roots — useful for dropping HTML/JS (XSS landing pages) or static config files.",
+      "linux": [
+        "/var/www/html/",
+        "/usr/share/nginx/html/",
+        "/srv/http/"
+      ],
+      "windows": [
+        "C:/inetpub/wwwroot/",
+        "C:/xampp/htdocs/"
+      ]
+    }
+  },
+
+  "devops_cloud": {
+    "docker": [
+      "/var/run/docker.sock",
+      "/.dockerenv",
+      "/etc/docker/daemon.json",
+      "/etc/docker/key.json",
+      "/var/lib/docker/containers/",
+      "/var/lib/docker/image/",
+      "/var/lib/docker/volumes/",
+      "/root/.docker/config.json",
+      "/home/{USER}/.docker/config.json",
+      "C:/ProgramData/Docker/config/daemon.json",
+      "C:/Users/{USER}/.docker/config.json"
+    ],
+
+    "kubernetes": [
+      "/var/run/secrets/kubernetes.io/serviceaccount/token",
+      "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
+      "/var/run/secrets/kubernetes.io/serviceaccount/namespace",
+      "/etc/kubernetes/admin.conf",
+      "/etc/kubernetes/kubelet.conf",
+      "/etc/kubernetes/scheduler.conf",
+      "/etc/kubernetes/controller-manager.conf",
+      "/etc/kubernetes/pki/ca.crt",
+      "/etc/kubernetes/pki/ca.key",
+      "/etc/kubernetes/pki/apiserver.crt",
+      "/etc/kubernetes/pki/apiserver.key",
+      "/etc/kubernetes/pki/apiserver-kubelet-client.key",
+      "/etc/kubernetes/pki/etcd/ca.crt",
+      "/etc/kubernetes/pki/etcd/server.key",
+      "/etc/kubernetes/manifests/",
+      "/var/lib/kubelet/config.yaml",
+      "/var/lib/kubelet/kubeadm-flags.env",
+      "/var/lib/kubelet/pki/kubelet-client-current.pem",
+      "/root/.kube/config",
+      "/home/{USER}/.kube/config",
+      "C:/Users/{USER}/.kube/config"
+    ],
+
+    "aws": [
+      "/root/.aws/credentials",
+      "/root/.aws/config",
+      "/home/{USER}/.aws/credentials",
+      "/home/{USER}/.aws/config",
+      "/home/{USER}/.aws/cli/cache/",
+      "/etc/aws/credentials",
+      "C:/Users/{USER}/.aws/credentials",
+      "C:/Users/{USER}/.aws/config"
+    ],
+
+    "gcp": [
+      "/root/.config/gcloud/credentials.db",
+      "/root/.config/gcloud/access_tokens.db",
+      "/root/.config/gcloud/application_default_credentials.json",
+      "/root/.config/gcloud/active_config",
+      "/root/.config/gcloud/configurations/config_default",
+      "/root/.config/gcloud/legacy_credentials/",
+      "/home/{USER}/.config/gcloud/credentials.db",
+      "/home/{USER}/.config/gcloud/application_default_credentials.json",
+      "C:/Users/{USER}/AppData/Roaming/gcloud/credentials.db",
+      "C:/Users/{USER}/AppData/Roaming/gcloud/application_default_credentials.json"
+    ],
+
+    "azure": [
+      "/root/.azure/accessTokens.json",
+      "/root/.azure/azureProfile.json",
+      "/root/.azure/clouds.config",
+      "/root/.azure/msal_token_cache.json",
+      "/root/.azure/service_principal_entries.json",
+      "/home/{USER}/.azure/accessTokens.json",
+      "/home/{USER}/.azure/azureProfile.json",
+      "C:/Users/{USER}/.azure/accessTokens.json",
+      "C:/Users/{USER}/.azure/azureProfile.json",
+      "C:/Users/{USER}/.azure/msal_token_cache.json"
+    ],
+
+    "cicd": [
+      "/var/lib/jenkins/secrets/master.key",
+      "/var/lib/jenkins/secrets/hudson.util.Secret",
+      "/var/lib/jenkins/secrets/initialAdminPassword",
+      "/var/lib/jenkins/credentials.xml",
+      "/var/lib/jenkins/jobs/",
+      "/var/lib/jenkins/users/",
+      "/var/lib/jenkins/config.xml",
+      "/home/jenkins/.ssh/id_rsa",
+      "/home/jenkins/workspace/",
+      "/home/gitlab-runner/.gitlab-runner/config.toml",
+      "/etc/gitlab-runner/config.toml",
+      "/var/opt/gitlab/gitlab-rails/etc/secrets.yml",
+      "/var/opt/gitlab/postgresql/data/pg_hba.conf",
+      "C:/ProgramData/GitLab-Runner/config.toml",
+      "C:/Program Files/Jenkins/secrets/master.key",
+      "./.github/workflows/",
+      "./.gitlab-ci.yml",
+      "./Jenkinsfile",
+      "./.circleci/config.yml",
+      "./.drone.yml",
+      "./bitbucket-pipelines.yml",
+      "./azure-pipelines.yml",
+      "./.travis.yml",
+      "./buildspec.yml",
+      "./cloudbuild.yaml"
+    ],
+
+    "scm": [
+      "/.git/config",
+      "/.git/HEAD",
+      "/.git/credentials",
+      "/.git/logs/HEAD",
+      "/.git/index",
+      "/.git/packed-refs",
+      "/.git/info/exclude",
+      "/.gitconfig",
+      "/root/.gitconfig",
+      "/root/.git-credentials",
+      "/home/{USER}/.gitconfig",
+      "/home/{USER}/.git-credentials",
+      "/.svn/entries",
+      "/.svn/wc.db",
+      "/.svn/all-wcprops",
+      "/.hg/store/",
+      "/.hg/hgrc",
+      "/.bzr/branch/branch.conf",
+      "/CVS/Root",
+      "/CVS/Entries"
+    ],
+
+    "iac": [
+      "./terraform.tfstate",
+      "./terraform.tfstate.backup",
+      "./.terraform/terraform.tfstate",
+      "./.terraform.lock.hcl",
+      "./terraform.tfvars",
+      "./secrets.auto.tfvars",
+      "./packer.json",
+      "/etc/ansible/hosts",
+      "/etc/ansible/ansible.cfg",
+      "/home/{USER}/.ansible/cp/",
+      "/home/{USER}/.ansible.cfg",
+      "./ansible.cfg",
+      "./inventory",
+      "/etc/salt/master",
+      "/etc/salt/minion",
+      "/etc/salt/pki/master/master.pem",
+      "/etc/salt/pki/minion/minion.pem",
+      "/etc/chef/client.rb",
+      "/etc/chef/client.pem",
+      "/etc/chef/validation.pem",
+      "/etc/puppet/puppet.conf",
+      "/etc/puppetlabs/puppet/ssl/private_keys/",
+      "/etc/cfengine/ppkeys/localhost.priv"
+    ],
+
+    "secrets_managers": [
+      "/var/lib/vault/",
+      "/etc/vault.d/vault.hcl",
+      "/etc/vault.d/agent.hcl",
+      "/opt/vault/data/",
+      "/opt/consul/data/",
+      "/etc/consul.d/",
+      "/etc/consul/server.json",
+      "/var/lib/etcd/",
+      "/etc/etcd/etcd.conf",
+      "/etc/etcd/ssl/etcd-server.pem"
+    ],
+
+    "containers_runtime": [
+      "/proc/1/cgroup",
+      "/sys/fs/cgroup/",
+      "/run/containerd/containerd.sock",
+      "/var/run/containerd/containerd.sock",
+      "/run/crio/crio.sock",
+      "/var/run/crio/crio.sock",
+      "/etc/containerd/config.toml",
+      "/etc/crio/crio.conf"
+    ],
+
+    "env_files": [
+      "./.env",
+      "./.env.local",
+      "./.env.production",
+      "./.env.development",
+      "./.env.staging",
+      "./.env.test",
+      "/etc/environment",
+      "/etc/default/locale",
+      "./config.yaml",
+      "./config.yml",
+      "./settings.yaml",
+      "./application.properties",
+      "./application.yml"
+    ],
+
+    "databases": [
+      "/var/lib/mysql/mysql/user.MYD",
+      "/var/lib/mysql/ibdata1",
+      "/var/lib/mysql/mysql.sock",
+      "/var/lib/postgresql/{VERSION}/main/base/",
+      "/var/lib/postgresql/{VERSION}/main/postmaster.pid",
+      "/var/lib/redis/dump.rdb",
+      "/var/lib/mongodb/",
+      "/var/lib/elasticsearch/",
+      "/var/backups/dump.sql",
+      "/tmp/dump.sql",
+      "/tmp/backup.tar.gz"
+    ]
+  },
+
+  "cloud_metadata_endpoints": {
+    "$note": "FILE-BASED cloud instance-metadata artifacts written to disk at boot by cloud-init / waagent / GCE guest agent. LFI-safe: every leaf here is a real local file. URL counterparts live under .ssrf_targets (consumed by the SSRF module, not by --file-read).",
+
+    "aws": [
+      "/var/lib/cloud/data/instance-id",
+      "/var/lib/cloud/data/previous-instance-id",
+      "/var/lib/cloud/data/result.json",
+      "/var/lib/cloud/data/status.json",
+      "/var/lib/cloud/instance/user-data.txt",
+      "/var/lib/cloud/instance/user-data.txt.i",
+      "/var/lib/cloud/instance/obj.pkl",
+      "/var/lib/cloud/instance/cloud-config.txt",
+      "/var/lib/cloud/instance/scripts/runcmd",
+      "/var/lib/cloud/instance/sem/config_scripts_user",
+      "/var/lib/cloud/seed/nocloud-net/meta-data",
+      "/var/lib/cloud/seed/nocloud-net/user-data",
+      "/var/log/cloud-init.log",
+      "/var/log/cloud-init-output.log",
+      "/etc/ec2_version",
+      "/etc/aws/credentials",
+      "/run/cloud-init/instance-data.json",
+      "/run/cloud-init/result.json",
+      "/run/cloud-init/status.json"
+    ],
+
+    "gcp": [
+      "/var/lib/google/instance_id",
+      "/var/lib/google/oslogin.cache",
+      "/var/lib/google-cloud-ops-agent/log/health-checks.log",
+      "/etc/default/instance_configs.cfg",
+      "/var/log/google_metadata_script_runner.log",
+      "/var/log/google-startup-scripts.log",
+      "/var/log/google-shutdown-scripts.log",
+      "/var/lib/cloud/instance/scripts/runcmd",
+      "/run/cloud-init/instance-data.json"
+    ],
+
+    "azure": [
+      "/var/lib/waagent/ovf-env.xml",
+      "/var/lib/waagent/CustomData",
+      "/var/lib/waagent/Incarnation",
+      "/var/lib/waagent/GoalState.1.xml",
+      "/var/lib/waagent/HostingEnvironmentConfig.xml",
+      "/var/lib/waagent/SharedConfig.xml",
+      "/var/lib/waagent/Certificates.xml",
+      "/var/lib/waagent/TransportPrivate.pem",
+      "/var/lib/waagent/TransportCert.pem",
+      "/var/log/waagent.log",
+      "/var/log/azure/cluster-provision.log",
+      "/var/log/azure/custom-script/handler.log",
+      "/etc/waagent.conf",
+      "C:/WindowsAzure/Logs/WaAppAgent.log",
+      "C:/WindowsAzure/Config/",
+      "C:/AzureData/CustomData.bin"
+    ],
+
+    "openstack": [
+      "/var/lib/cloud/seed/config-drive/openstack/latest/meta_data.json",
+      "/var/lib/cloud/seed/config-drive/openstack/latest/user_data",
+      "/var/lib/cloud/seed/config-drive/openstack/latest/vendor_data.json",
+      "/var/lib/cloud/seed/config-drive/openstack/latest/network_data.json",
+      "/mnt/config/openstack/latest/meta_data.json",
+      "/mnt/config/openstack/latest/user_data"
+    ],
+
+    "digitalocean": [
+      "/var/lib/cloud/seed/nocloud-net/meta-data",
+      "/var/lib/cloud/seed/nocloud-net/user-data",
+      "/run/cloud-init/instance-data.json"
+    ],
+
+    "kubernetes_node": [
+      "/etc/kubernetes/manifests/kube-apiserver.yaml",
+      "/etc/kubernetes/manifests/kube-controller-manager.yaml",
+      "/etc/kubernetes/manifests/kube-scheduler.yaml",
+      "/etc/kubernetes/manifests/etcd.yaml",
+      "/var/lib/kubelet/config.yaml",
+      "/var/lib/kubelet/kubeadm-flags.env",
+      "/var/lib/kubelet/pki/kubelet-client-current.pem",
+      "/etc/cni/net.d/"
+    ],
+
+    "common_cloudinit": [
+      "/etc/cloud/cloud.cfg",
+      "/etc/cloud/cloud.cfg.d/",
+      "/var/lib/cloud/instance/cloud-config.txt",
+      "/var/lib/cloud/scripts/per-instance/",
+      "/var/lib/cloud/scripts/per-boot/",
+      "/var/lib/cloud/scripts/per-once/",
+      "/var/lib/cloud/seed/",
+      "/run/cloud-init/cloud-id",
+      "/run/cloud-init/ds-identify.log",
+      "/run/cloud-init/result.json",
+      "/run/cloud-init/status.json",
+      "/run/cloud-init/instance-data.json",
+      "/run/cloud-init/instance-data-sensitive.json"
+    ]
+  },
+
+  "ssrf_targets": {
+    "$note": "HTTP/HTTPS cloud-metadata endpoints. NOT file paths — never routed through --file-read or path-traversal write payloads. Reserved for the SSRF module (ssrf_url) and any future SSRF-aware generator. Each provider sub-key is a flat URL list; provider-specific request-header requirements are documented in $headers.",
+    "$headers": {
+      "aws_imdsv2":  "PUT /latest/api/token with 'X-aws-ec2-metadata-token-ttl-seconds: 21600', then GET with 'X-aws-ec2-metadata-token: <token>'.",
+      "gcp":         "All requests require 'Metadata-Flavor: Google'.",
+      "azure":       "All requests require 'Metadata: true'."
+    },
+
+    "aws_imdsv1": [
+      "http://169.254.169.254/latest/meta-data/",
+      "http://169.254.169.254/latest/meta-data/iam/security-credentials/",
+      "http://169.254.169.254/latest/meta-data/iam/info",
+      "http://169.254.169.254/latest/meta-data/identity-credentials/ec2/security-credentials/ec2-instance",
+      "http://169.254.169.254/latest/meta-data/instance-id",
+      "http://169.254.169.254/latest/meta-data/hostname",
+      "http://169.254.169.254/latest/meta-data/local-ipv4",
+      "http://169.254.169.254/latest/meta-data/public-ipv4",
+      "http://169.254.169.254/latest/meta-data/mac",
+      "http://169.254.169.254/latest/user-data/",
+      "http://169.254.169.254/latest/dynamic/instance-identity/document",
+      "http://169.254.169.254/latest/dynamic/instance-identity/signature"
+    ],
+
+    "aws_ecs_task_metadata": [
+      "http://169.254.170.2/v2/credentials/",
+      "http://169.254.170.2/v2/metadata"
+    ],
+
+    "aws_lambda": [
+      "http://localhost:9001/2018-06-01/runtime/invocation/next"
+    ],
+
+    "gcp": [
+      "http://metadata.google.internal/computeMetadata/v1/",
+      "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token",
+      "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity",
+      "http://metadata.google.internal/computeMetadata/v1/instance/attributes/kube-env",
+      "http://metadata.google.internal/computeMetadata/v1/instance/attributes/startup-script",
+      "http://metadata.google.internal/computeMetadata/v1/project/project-id",
+      "http://metadata.google.internal/computeMetadata/v1/project/attributes/ssh-keys",
+      "http://169.254.169.254/computeMetadata/v1/"
+    ],
+
+    "azure": [
+      "http://169.254.169.254/metadata/instance?api-version=2021-02-01",
+      "http://169.254.169.254/metadata/instance/compute?api-version=2021-02-01",
+      "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/",
+      "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://vault.azure.net/",
+      "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://storage.azure.com/"
+    ],
+
+    "alibaba": [
+      "http://100.100.100.200/latest/meta-data/",
+      "http://100.100.100.200/latest/meta-data/ram/security-credentials/",
+      "http://100.100.100.200/latest/user-data/"
+    ],
+
+    "digitalocean": [
+      "http://169.254.169.254/metadata/v1/",
+      "http://169.254.169.254/metadata/v1.json",
+      "http://169.254.169.254/metadata/v1/user-data",
+      "http://169.254.169.254/metadata/v1/hostname",
+      "http://169.254.169.254/metadata/v1/region"
+    ],
+
+    "openstack": [
+      "http://169.254.169.254/openstack/latest/",
+      "http://169.254.169.254/openstack/latest/meta_data.json",
+      "http://169.254.169.254/openstack/latest/user_data",
+      "http://169.254.169.254/openstack/latest/password",
+      "http://169.254.169.254/openstack/latest/vendor_data.json"
+    ],
+
+    "oracle_cloud": [
+      "http://169.254.169.254/opc/v1/instance/",
+      "http://169.254.169.254/opc/v1/instance/metadata/",
+      "http://169.254.169.254/opc/v2/instance/"
+    ],
+
+    "ibm_cloud": [
+      "http://169.254.169.254/instance_identity/v1/",
+      "http://169.254.169.254/metadata/v1/"
+    ],
+
+    "packet_equinix": [
+      "https://metadata.packet.net/metadata",
+      "https://metadata.platformequinix.com/metadata"
+    ],
+
+    "kubernetes_node": [
+      "http://169.254.169.254/latest/meta-data/",
+      "https://kubernetes.default.svc/api/v1/namespaces/default/secrets"
+    ]
+  }
+}
