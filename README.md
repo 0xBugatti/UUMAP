@@ -20,7 +20,6 @@
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-cyan?style=for-the-badge&logo=python&logoColor=white&labelColor=0d0d0d)
 ![Modules](https://img.shields.io/badge/Attack_Modules-50-red?style=for-the-badge&labelColor=0d0d0d)
-![License](https://img.shields.io/badge/License-MIT-magenta?style=for-the-badge&labelColor=0d0d0d)
 
 </div>
 
