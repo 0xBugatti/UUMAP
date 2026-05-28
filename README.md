@@ -51,7 +51,6 @@
 ![Python](https://img.shields.io/badge/Python-3.8%2B-cyan?style=for-the-badge&logo=python&logoColor=white&labelColor=0d0d0d)
 ![Modules](https://img.shields.io/badge/Attack_Modules-50-red?style=for-the-badge&labelColor=0d0d0d)
 ![License](https://img.shields.io/badge/License-MIT-magenta?style=for-the-badge&labelColor=0d0d0d)
-![Standalone](https://img.shields.io/badge/Standalone-No_Burp_Required-green?style=for-the-badge&labelColor=0d0d0d)
 
 </div>
 
@@ -72,10 +71,6 @@
 8. [Combined Workflows](#combined-workflows)
 9. [Attack Inventory](#attack-inventory)
 10. [Output Layout](#output-layout)
-11. [CLI Reference](#cli-reference)
-12. [Architecture & Internals](#architecture--internals)
-13. [Maintenance Workflow](#maintenance-workflow)
-14. [Tips & Troubleshooting](#tips--troubleshooting)
 
 ---
 
@@ -593,125 +588,6 @@ bytes (NUL, CRLF, fullwidth Unicode) emit BOTH files:
 Lines with raw `\n`/`\r` are skipped from `_raw.txt` (would break the
 wordlist format); their semantic equivalent lives in `_urlenc.txt` as
 `%0a` / `%0d%0a`.
-
----
-
-## CLI Reference
-
-```bash
-python UpMap.py  --help
-python UpGen.py  --help
-python Upname.py --help
-
-python UpMap.py  --list      # 50 modules, grouped by phase
-python UpGen.py  --list      # 13 generators
-python Upname.py --list      # 8 techniques + 4 attacks + 5 languages
-```
-
-All three accept the same `@key` syntax for `--file-read`. Upname adds
-`--webroot @webroots.<lang>.<os>` for path-traversal WRITE-mode targets.
-
----
-
-## Architecture & Internals
-
-### One source of truth, three independents
-
-```
-                     ┌───────────────┐
-                     │  paths.json   │  ◀── canonical
-                     └──────┬────────┘
-                            │ python _embed_paths.py
-              ┌─────────────┼─────────────┐
-              │             │             │
-              ▼             ▼             ▼
-        ┌─────────┐   ┌─────────┐   ┌─────────┐
-        │ UpGen.py│   │ UpMap.py│   │Upname.py│
-        │  +data  │   │  +data  │   │  +data  │
-        └─────────┘   └─────────┘   └─────────┘
-```
-
-`_embed_paths.py` reads `paths.json` and injects it as a raw string literal
-into each tool, plus the shared helper code (`_is_dir_path`,
-`_resolve_paths_key`, `_validate_file_read_or_die`). The injection is
-idempotent — re-run after every `paths.json` edit.
-
-### Resolver semantics
-
-```python
-_resolve_paths_key(key, registry=None, allow_dirs=False)
-```
-
-- `key` literal (no `@`) → `[key]`
-- `@cat.sub.leaf` → walk the tree, collect every string leaf, skip
-  `$`-prefixed meta keys, filter dir-style leaves unless `allow_dirs=True`.
-- Trailing-`/` URLs (like `http://169.254.169.254/latest/meta-data/`) are
-  **not** treated as dirs — the predicate exempts known URL schemes.
-- Returns `None` when the key can't be resolved (CLI then errors clearly).
-
-### Per-language executable extension tables
-
-`UpGen.EXT` (body-side) and `Upname.EXEC_EXTS` (filename-side) carry the
-same union per language — synchronized verbatim:
-
-| Language | Extensions |
-|---|---|
-| `php` | php, php2-7, phtml, phtm, phar, pht, phps, pgif, inc, hphp, ctp, module (17) |
-| `asp` | asp, aspx, asa, asax, ashx, asmx, aspq, axd, cer, cdx, config, cshtm, cshtml, rem, shtml, soap, vbhtm, vbhtml, xamlx (19) |
-| `jsp` | jsp, jspx, jsw, jsv, jspf, wss, do, action (8) |
-| `coldfusion` | cfm, cfml, cfc, cfr, dbm (5) |
-| `perl` | pl, cgi, perl, pm, plx (5) |
-
-Add an extension to one, mirror it into the other — the two lists are kept
-identical by design.
-
----
-
-## Maintenance Workflow
-
-```bash
-# 1. Edit the canonical paths.json
-$EDITOR paths.json
-
-# 2. Re-embed into all three tools
-python _embed_paths.py
-
-# 3. Compile-check
-python -m py_compile UpGen.py UpMap.py Upname.py
-
-# 4. Sanity tests
-python UpGen.py  --list
-python Upname.py --list
-python UpMap.py  --list
-```
-
-**Adding a new exec extension:** update both `UpGen.EXT` and
-`Upname.EXEC_EXTS` (with the leading dot in Upname) and the
-`UpMap.target_lang()` accept-set if the new extension belongs to a
-language family the scanner routes via `-E`.
-
----
-
-## Tips & Troubleshooting
-
-- **Windows console looks weird** — all three tools force `sys.stdout` /
-  `sys.stderr` to UTF-8 on startup, so arrows and color codes render
-  correctly. If you're piping to a file, you can set `NO_COLOR=1` to
-  suppress ANSI.
-- **`--file-read @something` silently does nothing on the wire** — your
-  `@key` resolved to zero file leaves (all entries were dirs or `$`-meta).
-  Drill down to a more specific key or use a literal path.
-- **`@webroots.php.linux` resolves to nothing in `--file-read`** — by
-  design. `webroots` entries are directories; they're write-mode targets,
-  consumed by Upname's `--webroot`, not `--file-read`.
-- **No external paths.json present** — every tool ships its own embedded
-  copy. The external file is the canonical edit point, never a runtime
-  requirement. Move `UpGen.py` alone to a clean machine and it still works.
-- **UpMap exits with "Provide -u URL, -r request.txt, or --targets …"** —
-  the live scanner needs a target. UpGen and Upname do not.
-- **Custom shell in UpGen does not fire `--file-read`** — that's correct.
-  `--file-read` overrides LFI payloads only; RCE shells already execute
-  arbitrary code and have no "file target" to retarget.
 
 ---
 
