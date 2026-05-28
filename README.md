@@ -1,5 +1,11 @@
 <div align="center">
 
+<img src="logo.png" width="320" alt="UUmap" />
+
+<br/>
+
+<img src="https://github.com/0xbugatti.png" width="180" height="180" style="border-radius:50%; border: 3px solid #00fff7; box-shadow: 0 0 20px #00fff7;" alt="0xBugatti" />
+
 ```
                         ...........
                    .....................
@@ -42,18 +48,10 @@
               Unrestricted Upload Map · by @0xbugatti
 ```
 
-<img src="https://github.com/0xbugatti.png" width="140" height="140" style="border-radius:50%; border: 3px solid #00fff7; box-shadow: 0 0 20px #00fff7;" alt="0xBugatti" />
-
 ![Python](https://img.shields.io/badge/Python-3.8%2B-cyan?style=for-the-badge&logo=python&logoColor=white&labelColor=0d0d0d)
 ![Modules](https://img.shields.io/badge/Attack_Modules-50-red?style=for-the-badge&labelColor=0d0d0d)
 ![License](https://img.shields.io/badge/License-MIT-magenta?style=for-the-badge&labelColor=0d0d0d)
 ![Standalone](https://img.shields.io/badge/Standalone-No_Burp_Required-green?style=for-the-badge&labelColor=0d0d0d)
-![Author](https://img.shields.io/badge/Author-0xBugatti-orange?style=for-the-badge&labelColor=0d0d0d)
-
----
-
-*The most complete file upload security assessment toolkit ever built.*
-*50 modules. 13 generators. 8 + 4 techniques. One paths.json. Zero compromises.*
 
 </div>
 
@@ -78,7 +76,6 @@
 12. [Architecture & Internals](#architecture--internals)
 13. [Maintenance Workflow](#maintenance-workflow)
 14. [Tips & Troubleshooting](#tips--troubleshooting)
-15. [Legal & Disclaimer](#legal--disclaimer)
 
 ---
 
@@ -718,26 +715,8 @@ language family the scanner routes via `-E`.
 
 ---
 
-## Legal & Disclaimer
-
-These tools are intended exclusively for **authorized security testing**:
-penetration testing engagements with written scope, CTF challenges,
-bug-bounty programs within the program's scope, and defensive research on
-systems you own or have explicit permission to test.
-
-Using this toolkit against systems you do not have authorization to test
-is illegal in most jurisdictions. **The author accepts no liability for
-misuse.** You are responsible for ensuring your use complies with all
-applicable laws and contracts.
-
----
-
 <div align="center">
 
-```
-                              by  @0xbugatti
-                              ──────────────
-                                  MIT
-```
+### Built by [**@0xbugatti**](https://github.com/0xbugatti) · MIT License
 
 </div>
